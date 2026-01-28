@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VB.NET OOP – Theory Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 2rem 1.5rem 3rem;
+      background: #020617;
+      color: #f9fafb;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #020617;
+      border-radius: 12px;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+      border: 1px solid #1e293b;
+    }
+    h1, h2, h3, h4 {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 0.5rem;
+    }
+    h3 {
+      margin-top: 1.5rem;
+    }
+    code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      background: #020617;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      border: 1px solid #1f2937;
+    }
+    pre code {
+      display: block;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+    }
+    a {
+      color: #60a5fa;
+    }
+    a:hover {
+      color: #93c5fd;
+    }
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+    hr {
+      border: none;
+      border-bottom: 1px dashed #1f2937;
+      margin: 1.75rem 0;
+    }
+    .tagline {
+      color: #9ca3af;
+      margin-bottom: 1.75rem;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <main>
+    <h1>VB.NET OOP – Theory Guide</h1>
+    <p class="tagline">Generated from <code>concepts.md</code>. This is a read‑only HTML view of the markdown file.</p>
+    <div id="content"></div>
+  </main>
+
+  <script type="text/markdown" id="markdown-source">
+## Object-Oriented Programming (OOP) – VB.NET Theory Guide
+
+### 1. Encapsulation
+
+**Definition**
+
+- **Encapsulation** is about **bundling data and behavior** into a single unit (class) and **controlling access** to that data.
+- It hides implementation details and **exposes only what is necessary** through public members (properties/methods).
+
+**Key VB.NET mechanisms**
+
+- Access modifiers: `Private`, `Protected`, `Friend`, `Public`, `Protected Friend`.
+- Properties (`Property ... End Property`) instead of exposing fields directly.
+- Methods that perform validation/checks before modifying state.
+
+**In the code (`BankAccount.vb`)**
+
+- `_accountNumber` and `_balance` are **private fields**.
+- `AccountNumber` is **read-only**: only getter is public.
+- `Balance` has a **private setter** with validation to avoid negative values.
+- `Deposit`/`Withdraw` methods expose a safe way to update balance.
+
+**Interview talking points**
+
+- Why exposing fields directly is bad (no validation, hard to maintain invariants).
+- Difference between **fields vs properties** in VB.NET.
+- How encapsulation helps in **maintainability, testability, and security**.
+
+---
+
+### 2. Inheritance
+
+**Definition**
+
+- **Inheritance** allows one class (**derived/child**) to reuse and extend the behavior of another (**base/parent**).
+- Promotes **code reuse** and creates natural hierarchies.
+
+**Key VB.NET mechanisms**
+
+- `Inherits` keyword.
+- `MyBase` to call base constructor or methods.
+
+**In the code (`EmployeeHierarchy.vb`)**
+
+- `PermanentEmployee` and `ContractEmployee` **inherit** from `Employee`.
+- Common properties (`Id`, `Name`) and methods (`ToString`) are in the base class.
+- Derived classes add their own data and override behavior (salary calculation).
+
+**Interview talking points**
+
+- When to use inheritance vs composition (e.g., “has-a” vs “is-a”).
+- Risks of deep inheritance trees (fragile base class problem).
+- How inheritance interacts with access modifiers (`Protected` vs `Private`).
+
+---
+
+### 3. Polymorphism (Runtime &amp; Compile-Time)
+
+#### 3.1 Runtime Polymorphism (Overriding)
+
+**Definition**
+
+- Ability for a **base class reference** to point to **different derived objects** and call the **correct overridden implementation at runtime**.
+
+**Key VB.NET mechanisms**
+
+- `Overridable` in base class.
+- `Overrides` in derived class.
+- Late binding via virtual method dispatch.
+
+**In the code (`EmployeeHierarchy.vb`)**
+
+- `Employee.CalculateMonthlySalary` is `Overridable`.
+- `PermanentEmployee` and `ContractEmployee` implement `Overrides Function CalculateMonthlySalary`.
+- `PayrollModule.PrintSalaries` works with `IEnumerable(Of Employee)` and polymorphically calls the overridden method per object.
+
+#### 3.2 Compile-Time Polymorphism (Overloading)
+
+**Definition**
+
+- **Same method name**, different **parameter lists** (type, number, or order).
+- Compiler decides which method to call based on signature at **compile time**.
+
+**Key VB.NET mechanisms**
+
+- Method overloading: multiple `Add` methods in `Calculator`.
+
+**In the code (`Calculator.vb`)**
+
+- Overloaded `Add` for:
+  - `Integer, Integer`
+  - `Decimal, Decimal`
+  - `Integer, Integer, Integer`
+  - `IEnumerable(Of Integer)`
+
+**Interview talking points**
+
+- Difference between **overloading** (compile-time) and **overriding** (runtime).
+- Why overloading alone isn’t “true polymorphism” in the OOP sense (no dynamic dispatch).
+- Ambiguous overload resolution and how the compiler picks the best match.
+
+---
+
+### 4. Abstraction
+
+**Definition**
+
+- **Abstraction** focuses on **what** an object does, not **how** it does it.
+- You expose **essential behavior**, hide complex details behind clean APIs.
+
+**Key VB.NET mechanisms**
+
+- `MustInherit` classes (abstract base classes).
+- `MustOverride` members (no implementation in base).
+- Abstract + concrete members combined to express a “template”.
+
+**In the code (`DataExporter.vb`)**
+
+- `DataExporter` is `MustInherit`:
+  - `Export` method is concrete (template algorithm).
+  - `GetData` and `TransformData` are `MustOverride` (details left to subclasses).
+- `CsvDataExporter` provides concrete data source and CSV formatting.
+
+**Pattern**
+
+- This is the **Template Method pattern**:
+  - Fixed sequence in `Export`.
+  - Customizable steps (`GetData`, `TransformData`) in subclasses.
+
+**Interview talking points**
+
+- Difference between **interface** and **abstract (MustInherit) class**:
+  - Abstract class can have implementation + fields; interface only signatures (pre‑VB 8).
+  - A class can `Inherit` only one base class, but `Implements` multiple interfaces.
+- When you’d choose abstraction via base class vs interfaces.
+
+---
+
+### 5. Interfaces &amp; Multiple Implementation
+
+**Definition**
+
+- An **interface** defines a **contract**: methods, properties, events that a class must implement.
+- No implementation details; purely “what” must be done.
+
+**Key VB.NET mechanisms**
+
+- `Interface ... End Interface`.
+- `Implements` keyword in classes.
+- Explicit implementation: `Implements ILogger.LogInfo`.
+
+**In the code (`InterfacesAndLogger.vb`)**
+
+- `ILogger` defines `LogInfo` and `LogError`.
+- `IAuditable` defines `Audit`.
+- `ConsoleLogger` implements **both** interfaces:
+  - Same class can be used as `ILogger` or `IAuditable`.
+  - Multiple behaviors on a single type.
+
+**Interview talking points**
+
+- Why interfaces are ideal for **dependency injection and unit testing**.
+- Difference between **interface vs base abstract class**.
+- How multiple interfaces simulate a form of multiple inheritance.
+
+---
+
+### 6. Constructors &amp; Constructor Chaining
+
+**Definition**
+
+- **Constructors** initialize new objects.
+- **Constructor chaining** reuses logic between constructors, reducing duplication.
+
+**Key VB.NET mechanisms**
+
+- `Sub New(...)`.
+- `Me.New(...)` to chain.
+
+**In the code (`UserEntity.vb`)**
+
+- Default constructor:
+  - Calls `Me.New(0, "Guest", "guest@example.com")`.
+- Overloaded constructor with `id` and `userName`:
+  - Calls `Me.New(id, userName, $"{userName}@example.com")`.
+- Full constructor with `id`, `userName`, `email` sets all fields.
+
+**Interview talking points**
+
+- Why chaining is better than repeating initialization logic.
+- When to use **optional parameters** vs multiple constructors.
+- Interaction of **parameterless constructors** with frameworks (e.g., serialization, ORMs).
+
+---
+
+### 7. Generics
+
+**Definition**
+
+- **Generics** allow you to define classes, interfaces, and methods with **type parameters**.
+- They improve **type safety** and **reusability** and avoid boxing/unboxing.
+
+**Key VB.NET mechanisms**
+
+- `Of T`, `Of T As Class`, type constraints.
+- Generic interfaces and classes: `IRepository(Of T)`, `InMemoryRepository(Of T)`.
+
+**In the code (`Repository.vb`)**
+
+- `IRepository(Of T)` defines generic CRUD-style operations.
+- `InMemoryRepository(Of T As Class)`:
+  - Stores `List(Of T)`.
+  - Uses reflection to require an `Id` property.
+- You can instantiate:
+  - `Dim empRepo As IRepository(Of Employee) = New InMemoryRepository(Of Employee)()`.
+
+**Interview talking points**
+
+- Why generics are better than using `Object`.
+- Type constraints: `Of T As Class`, `Of T As {Class, ISomeInterface}`.
+- Cost and trade-offs of using reflection vs strongly typing identifiers.
+
+---
+
+### 8. Delegates &amp; Events
+
+**Definition**
+
+- A **delegate** is a type-safe reference to a method (like a function pointer).
+- An **event** is a higher-level abstraction built on delegates that follows a publisher–subscriber model.
+
+**Key VB.NET mechanisms**
+
+- `Delegate Sub ...`.
+- `Event ... As ...`.
+- `AddHandler` / `RemoveHandler`.
+- `RaiseEvent` to trigger notifications.
+
+**In the code (`EventsAndProduct.vb`)**
+
+- `PriceChangedHandler` delegate defines the event handler signature.
+- `Product` class exposes `Event PriceChanged As PriceChangedHandler`.
+- In `Price` property setter:
+  - Compares old vs new.
+  - Calls `RaiseEvent PriceChanged(old, _price)` when value changes.
+- `InventoryService` subscribes via `AddHandler product.PriceChanged, AddressOf OnPriceChanged`.
+
+**Interview talking points**
+
+- Difference between **event** and **delegate**.
+- Publisher–subscriber vs direct method calls.
+- Use cases: UI events, domain events, decoupling components.
+
+---
+
+### 9. Putting It All Together (Design Perspective)
+
+**Layered design ideas**
+
+- `Entity` classes: `Employee`, `User`, `Product`, `BankAccount`.
+- **Domain services**:
+  - `PayrollModule` (business logic).
+  - `InventoryService` (subscriber to domain events).
+- **Infrastructure**:
+  - `ConsoleLogger` (logging).
+  - `InMemoryRepository(Of T)` (data storage).
+  - `DataExporter` and `CsvDataExporter` (integration).
+
+**What to emphasize in interviews**
+
+- How **encapsulation, inheritance, and polymorphism** work together in the `Employee` example.
+- How **interfaces and generics** make code more testable and extensible.
+- How **events** decouple producers and consumers of changes.
+- Trade-offs: inheritance vs composition, abstract classes vs interfaces, repository patterns vs direct data access.
+
+---
+
+### 10. Exporting This as PDF
+
+- Open `concepts.md` in your editor or a Markdown viewer.
+- Use **Print / Export as PDF** (e.g., Print dialog → “Microsoft Print to PDF”).
+  </script>
+
+  <script>
+    (function () {
+      const src = document.getElementById('markdown-source');
+      const content = document.getElementById('content');
+      if (src && content && window.marked) {
+        const markdown = src.textContent || src.innerText || '';
+        content.innerHTML = marked.parse(markdown, {
+          breaks: true
+        });
+      } else if (src && content) {
+        // Fallback: show raw markdown if marked.js fails to load
+        content.textContent = src.textContent || src.innerText || '';
+      }
+    })();
+  </script>
+</body>
+</html>
+
